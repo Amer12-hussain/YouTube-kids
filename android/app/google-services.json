@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "774269976586",
+    "project_id": "funkids-83cc7",
+    "storage_bucket": "funkids-83cc7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774269976586:android:20a27b385753e2475a9ff3",
+        "android_client_info": {
+          "package_name": "com.amer.funkid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774269976586-qst04k6nkqasu49ngr9sl91684u7gjks.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amer.funkid",
+            "certificate_hash": "e26d9dd6b47ef9c40a755f7fa3472ce6a3e65477"
+          }
+        },
+        {
+          "client_id": "774269976586-m8j821ibufjhan3ifhto5g72cu1fgdpt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2X8ERJ9YsOnTvnlWfvY-d6oC6ufvBrTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774269976586-m8j821ibufjhan3ifhto5g72cu1fgdpt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
