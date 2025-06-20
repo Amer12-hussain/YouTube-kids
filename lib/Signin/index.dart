@@ -13,21 +13,17 @@ class _SignInPageState extends State<SignInPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   Future<void> handleSignIn() async {
     try {
-      final account = await _googleSignIn.signIn();
+      await _googleSignIn.signOut(); // Important: force picker
+      final account = await _googleSignIn
+          .signIn(); // Will show the account list again
       if (account != null) {
         setState(() {
           _user = account;
         });
         print("✅ Signed in: ${account.email}");
-        // Proceed to next screen or show welcome
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) {
-              print("➡️ Navigating to HomePage");
-              return const HomePage();
-            },
-          ),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } catch (error) {
@@ -89,24 +85,50 @@ class _SignInPageState extends State<SignInPage> {
                         _user!.email,
                         style: TextStyle(fontSize: 14, color: Colors.black87),
                       ),
-                      Icon(Icons.arrow_drop_down, color: Colors.black),
+                      IconButton(
+                        icon: Icon(Icons.logout, color: Colors.red),
+                        onPressed: () async {
+                          await _googleSignIn.signOut();
+                          setState(() {
+                            _user = null;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 )
               else
                 // 👉 Google Sign-in prompt
-                ElevatedButton.icon(
-                  onPressed: handleSignIn,
-                  icon: Image.asset(
-                    'assets/images/google_logo.png',
-                    height: 20,
-                  ),
-                  label: Text("Select your account"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black87,
-                    shape: StadiumBorder(),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                GestureDetector(
+                  onTap: handleSignIn, // Open Google account picker
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 4),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.grey[300],
+                          child: Text(
+                            _user?.displayName?[0].toUpperCase() ?? '?',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          _user?.email ?? "Select your account",
+                          style: TextStyle(fontSize: 14, color: Colors.black87),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.arrow_drop_down, color: Colors.black),
+                      ],
+                    ),
                   ),
                 ),
               SizedBox(height: 30),
