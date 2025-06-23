@@ -46,13 +46,10 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Center(
-          child: AspectRatio(
-            aspectRatio: 9 / 16,
-            child: YoutubePlayer(
-              controller: _controller,
-              showVideoProgressIndicator: true,
-            ),
+        SizedBox.expand(
+          child: YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: true,
           ),
         ),
         Positioned(
