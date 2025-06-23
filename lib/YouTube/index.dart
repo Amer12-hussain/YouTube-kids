@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_kids/YoutubePlayerScreen/index.dart';
 
 Future<List<Map<String, dynamic>>> fetchKidsShorts() async {
@@ -16,6 +15,7 @@ Future<List<Map<String, dynamic>>> fetchKidsShorts() async {
     final data = jsonDecode(response.body);
     final List items = data['items'];
     return items.map((item) {
+      print("Video ID: ${item['id']['videoId']}");
       return {
         'videoId': item['id']['videoId'],
         'title': item['snippet']['title'],
@@ -49,13 +49,13 @@ class ShortsList extends StatelessWidget {
               leading: Image.network(video['thumbnail'], width: 100),
               title: Text(video['title']),
               onTap: () {
+                print("🎬 Opening embedded player for: ${video['videoId']}");
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => YouTubePlayerScreen(
                       videoId: video['videoId'],
-                      channelTitle:
-                          video['title'], // You can use video['channelTitle'] if available
+                      channelTitle: video['title'],
                     ),
                   ),
                 );
