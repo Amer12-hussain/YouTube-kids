@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:youtube_kids/YoutubePlayerScreen/index.dart';
+import 'package:youtube_kids/YoutubePlayerScreen/ShortsFeedScreen.dart';
 
 Future<List<Map<String, dynamic>>> fetchKidsShorts() async {
   const String apiKey = 'AIzaSyCk842MyJQwbD26IsSmCIZQ_C2t0b3QPkc';
@@ -49,14 +49,11 @@ class ShortsList extends StatelessWidget {
               leading: Image.network(video['thumbnail'], width: 100),
               title: Text(video['title']),
               onTap: () {
-                print("🎬 Opening embedded player for: ${video['videoId']}");
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => YouTubePlayerScreen(
-                      videoId: video['videoId'],
-                      channelTitle: video['title'],
-                    ),
+                    builder: (_) =>
+                        ShortsFeedScreen(videos: videos, initialIndex: index),
                   ),
                 );
               },
