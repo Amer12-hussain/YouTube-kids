@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-// TEMP: Add ShortsVideoPlayer here if not in separate file
 class ShortsVideoPlayer extends StatefulWidget {
   final String videoId;
   final String channelTitle;
@@ -98,46 +97,6 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
           ),
         ),
       ],
-    );
-  }
-}
-
-// ✅ THIS is the correct widget class causing your error
-class ShortsFeedScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> videos;
-  final int initialIndex;
-  const ShortsFeedScreen({
-    super.key,
-    required this.videos,
-    this.initialIndex = 0,
-  });
-  @override
-  State<ShortsFeedScreen> createState() => _ShortsFeedScreenState();
-}
-
-class _ShortsFeedScreenState extends State<ShortsFeedScreen> {
-  late PageController _pageController;
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: widget.initialIndex);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView.builder(
-        controller: _pageController,
-        scrollDirection: Axis.vertical,
-        itemCount: widget.videos.length,
-        itemBuilder: (context, index) {
-          final video = widget.videos[index];
-          return ShortsVideoPlayer(
-            videoId: video['videoId'],
-            channelTitle: video['title'],
-          );
-        },
-      ),
     );
   }
 }
