@@ -3,7 +3,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YouTubePlayerScreen extends StatefulWidget {
   final String videoId;
-  final String channelTitle; // New: Account/Channel Name
+  final String channelTitle;
   const YouTubePlayerScreen({
     required this.videoId,
     required this.channelTitle,
@@ -38,76 +38,75 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // YouTube Player in vertical style
-          Center(
-            child: SizedBox(
-              width: screenWidth,
-              height: screenHeight,
-              child: YoutubePlayerBuilder(
-                player: YoutubePlayer(
-                  controller: _controller,
-                  showVideoProgressIndicator: true,
-                ),
-                builder: (context, player) {
-                  return AspectRatio(aspectRatio: 9 / 16, child: player);
-                },
+      body: YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          bottomActions: [
+            const SizedBox(width: 14),
+            CurrentPosition(),
+            const SizedBox(width: 8),
+            ProgressBar(isExpanded: true),
+            const SizedBox(width: 8),
+            RemainingDuration(),
+            const PlaybackSpeedButton(),
+          ],
+        ),
+        builder: (context, player) {
+          return Stack(
+            children: [
+              // Full-screen player with 9:16 aspect ratio
+              Center(
+                child: AspectRatio(aspectRatio: 9 / 16, child: player),
               ),
-            ),
-          ),
-          // Back button (top-left corner)
-          Positioned(
-            top: 40,
-            left: 16,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  color: Colors.black54,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.arrow_back, color: Colors.white),
-              ),
-            ),
-          ),
-          // Bottom channel info
-          Positioned(
-            bottom: 40,
-            left: 16,
-            right: 16,
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 18,
-                  child: Icon(
-                    Icons.account_circle,
-                    size: 30,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    widget.channelTitle,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              // Back button (top-left corner)
+              Positioned(
+                top: 40,
+                left: 16,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
                     ),
-                    overflow: TextOverflow.ellipsis,
+                    child: const Icon(Icons.arrow_back, color: Colors.white),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+              // Channel title at the bottom
+              Positioned(
+                bottom: 40,
+                left: 16,
+                right: 16,
+                child: Row(
+                  children: [
+                    const CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 18,
+                      child: Icon(Icons.account_circle, color: Colors.black),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        widget.channelTitle,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
