@@ -19,7 +19,8 @@
 // }
 // lib/Home/HomePage.dart
 import 'package:flutter/material.dart';
-import 'package:youtube_kids/YouTube/index.dart'; // ✅ use correct path based on your project
+// ✅ use correct path based on your project
+import 'package:youtube_kids/YouTube/AgeSelectionScreen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,7 +28,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('YouTube Kids Shorts')),
-      body: const ShortsList(),
+      body: const AgeSelectionScreen(),
     );
   }
 }

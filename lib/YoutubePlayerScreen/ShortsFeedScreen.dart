@@ -6,11 +6,13 @@ class ShortsFeedScreen extends StatefulWidget {
   final List<Map<String, dynamic>> initialVideos;
   final String? initialPageToken;
   final int initialIndex;
+  final String ageGroup; // ✅ Added
   const ShortsFeedScreen({
     super.key,
     required this.initialVideos,
     required this.initialPageToken,
     this.initialIndex = 0,
+    required this.ageGroup, // ✅ Added
   });
   @override
   State<ShortsFeedScreen> createState() => _ShortsFeedScreenState();
@@ -40,7 +42,10 @@ class _ShortsFeedScreenState extends State<ShortsFeedScreen> {
   Future<void> _loadMoreVideos() async {
     setState(() => _isLoadingMore = true);
     try {
-      final result = await fetchKidsShorts(pageToken: _nextPageToken);
+      final result = await fetchKidsShorts(
+        ageGroup: widget.ageGroup, // ✅ Always use the correct age group
+        pageToken: _nextPageToken,
+      );
       final newVideos = List<Map<String, dynamic>>.from(result['videos']);
       setState(() {
         _videos.addAll(newVideos);
