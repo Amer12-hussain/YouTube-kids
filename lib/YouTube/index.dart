@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_kids/YoutubePlayerScreen/ShortsFeedScreen.dart';
 
@@ -9,8 +9,7 @@ Future<Map<String, dynamic>> fetchKidsShorts({
   String? pageToken,
 }) async {
   const String apiKey = 'AIzaSyD4QG7mkX0OohnfFTsr70CMUzMNzU0vF30';
-  String query = 'kids cartoon shorts'; // default query
-  // ✅ Query logic based on selected age group
+  String query = 'kids cartoon shorts';
   switch (ageGroup) {
     case '1-2':
       query = 'colorful nursery rhymes and baby cartoons for toddlers';
@@ -57,8 +56,8 @@ class ShortsList extends StatefulWidget {
 
 class _ShortsListState extends State<ShortsList> {
   late Future<Map<String, dynamic>> _future;
-  final ScrollController _scrollController = ScrollController();
   String? ageGroup;
+  bool _navigated = false;
   @override
   void initState() {
     super.initState();
@@ -67,21 +66,43 @@ class _ShortsListState extends State<ShortsList> {
 
   Future<void> _loadAgeAndFetchVideos() async {
     final prefs = await SharedPreferences.getInstance();
-    ageGroup = prefs.getString('selectedAgeGroup') ?? '3-4'; // fallback age
+    ageGroup = prefs.getString('selectedAgeGroup') ?? '3-4';
     _future = fetchKidsShorts(ageGroup: ageGroup);
     setState(() {});
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void _autoPlayFirstVideo(
+    BuildContext context,
+    List<Map<String, dynamic>> videos,
+    String nextPageToken,
+  ) {
+    if (!_navigated && videos.isNotEmpty && ageGroup != null) {
+      _navigated = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ShortsFeedScreen(
+              initialVideos: videos,
+              initialPageToken: nextPageToken,
+              initialIndex: 0,
+              ageGroup: ageGroup!,
+            ),
+          ),
+        ).then((_) {
+          // Reset navigation flag so user can open another video if needed
+          setState(() {
+            _navigated = false;
+          });
+        });
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Shorts for Age: ${ageGroup ?? "-"}')),
+      backgroundColor: Colors.pink.shade50,
       body: FutureBuilder(
         future: _future,
         builder: (context, snapshot) {
@@ -93,29 +114,13 @@ class _ShortsListState extends State<ShortsList> {
           }
           final result = snapshot.data as Map<String, dynamic>;
           final videos = List<Map<String, dynamic>>.from(result['videos']);
-          return ListView.builder(
-            controller: _scrollController,
-            itemCount: videos.length,
-            itemBuilder: (context, index) {
-              final video = videos[index];
-              return ListTile(
-                leading: Image.network(video['thumbnail'], width: 100),
-                title: Text(video['title']),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ShortsFeedScreen(
-                        initialVideos: videos,
-                        initialPageToken: result['nextPageToken'],
-                        initialIndex: index,
-                        ageGroup: ageGroup!,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+          final nextPageToken = result['nextPageToken'];
+          _autoPlayFirstVideo(context, videos, nextPageToken);
+          return const Center(
+            child: Text(
+              'Loading first short...',
+              style: TextStyle(fontSize: 18),
+            ),
           );
         },
       ),
