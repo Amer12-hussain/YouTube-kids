@@ -37,9 +37,9 @@ class _SignInPageState extends State<SignInPage> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color.fromARGB(255, 247, 199, 199),
-              Color(0xFFE85D75),
-              Color.fromARGB(255, 148, 21, 47),
+              Color.fromARGB(255, 245, 185, 185),
+              Color.fromARGB(255, 153, 90, 101),
+              Color.fromARGB(255, 161, 48, 71),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
