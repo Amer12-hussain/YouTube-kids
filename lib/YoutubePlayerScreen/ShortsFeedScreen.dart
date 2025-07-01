@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_kids/Youtube/index.dart';
-import 'package:youtube_kids/YoutubePlayerScreen/ShortsVideoPlayer.dart';
+import 'package:youtube_kids/YouTube/AgeSelectionScreen.dart';
+import 'package:youtube_kids/YouTube/index.dart';
+import 'package:youtube_kids/YouTubePlayerScreen/ShortsVideoPlayer.dart';
 
 class ShortsFeedScreen extends StatefulWidget {
   final List<Map<String, dynamic>> initialVideos;
   final String? initialPageToken;
   final int initialIndex;
-  final String ageGroup; // ✅ Added
+  final String ageGroup;
   const ShortsFeedScreen({
     super.key,
     required this.initialVideos,
     required this.initialPageToken,
     this.initialIndex = 0,
-    required this.ageGroup, // ✅ Added
+    required this.ageGroup,
   });
   @override
   State<ShortsFeedScreen> createState() => _ShortsFeedScreenState();
@@ -43,7 +44,7 @@ class _ShortsFeedScreenState extends State<ShortsFeedScreen> {
     setState(() => _isLoadingMore = true);
     try {
       final result = await fetchKidsShorts(
-        ageGroup: widget.ageGroup, // ✅ Always use the correct age group
+        ageGroup: widget.ageGroup,
         pageToken: _nextPageToken,
       );
       final newVideos = List<Map<String, dynamic>>.from(result['videos']);
@@ -76,6 +77,12 @@ class _ShortsFeedScreenState extends State<ShortsFeedScreen> {
           return ShortsVideoPlayer(
             videoId: video['videoId'],
             channelTitle: video['title'],
+            onBack: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => AgeSelectionScreen()),
+                (route) => false,
+              );
+            },
           );
         },
       ),

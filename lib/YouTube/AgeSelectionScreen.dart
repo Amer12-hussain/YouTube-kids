@@ -17,64 +17,98 @@ class AgeSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 247, 127, 127),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 70),
-            Text(
-              'Choose Your Age Group',
-              style: GoogleFonts.balooBhaijaan2(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-                color: const Color.fromARGB(255, 0, 0, 0),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 247, 199, 199),
+              Color(0xFFE85D75),
+              Color.fromARGB(255, 184, 64, 88),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 70),
+              Text(
+                'Choose Your Age Group',
+                style: GoogleFonts.balooBhaijaan2(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  double itemWidth = (constraints.maxWidth - 40) / 2;
-                  return Wrap(
-                    spacing: 20,
-                    runSpacing: 20,
-                    alignment: WrapAlignment.center,
-                    children: ageGroups.map((age) {
-                      return GestureDetector(
-                        onTap: () => _handleAgeTap(context, age),
-                        child: Container(
-                          width: itemWidth,
-                          height: itemWidth * 1.1,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
+              const SizedBox(height: 30),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    double itemWidth = (constraints.maxWidth - 40) / 2;
+                    return Wrap(
+                      spacing: 20,
+                      runSpacing: 20,
+                      alignment: WrapAlignment.center,
+                      children: ageGroups.map((age) {
+                        return Material(
+                          borderRadius: BorderRadius.circular(25),
+                          elevation: 4,
+                          child: InkWell(
                             borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(3, 3),
+                            onTap: () => _handleAgeTap(context, age),
+                            child: Container(
+                              width: itemWidth,
+                              height: itemWidth * 1.1,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(
+                                      255,
+                                      255,
+                                      255,
+                                      255,
+                                    ), // Light Pink
+                                    Color.fromARGB(
+                                      255,
+                                      203,
+                                      170,
+                                      181,
+                                    ), // Medium Pink
+                                    Color.fromARGB(
+                                      255,
+                                      255,
+                                      254,
+                                      254,
+                                    ), // Stronger Pink
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
                               ),
-                            ],
-                          ),
-                          child: Center(
-                            child: Text(
-                              '$age Years',
-                              style: GoogleFonts.poppins(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                              child: Text(
+                                '$age Years',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                },
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
