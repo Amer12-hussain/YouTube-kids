@@ -71,6 +71,7 @@ class _ShortsFeedScreenState extends State<ShortsFeedScreen> {
       body: PageView.builder(
         controller: _pageController,
         scrollDirection: Axis.vertical,
+        physics: const FastPageScrollPhysics(), // ⏩ Faster scroll physics
         itemCount: _videos.length,
         itemBuilder: (context, index) {
           final video = _videos[index];
@@ -87,5 +88,25 @@ class _ShortsFeedScreenState extends State<ShortsFeedScreen> {
         },
       ),
     );
+  }
+}
+
+/// 🔧 Custom scroll physics for faster vertical scroll
+class FastPageScrollPhysics extends PageScrollPhysics {
+  const FastPageScrollPhysics({ScrollPhysics? parent}) : super(parent: parent);
+  @override
+  FastPageScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return FastPageScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  double get dragStartDistanceMotionThreshold => 10.0;
+  @override
+  double get minFlingVelocity => 100.0;
+  @override
+  double get maxFlingVelocity => 8000.0;
+  @override
+  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
+    return offset * 1.5; // Scroll faster
   }
 }

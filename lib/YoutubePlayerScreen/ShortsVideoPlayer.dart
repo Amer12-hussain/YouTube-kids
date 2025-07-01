@@ -74,25 +74,6 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
             showVideoProgressIndicator: false,
           ),
         ),
-        // Back button
-        // Positioned(
-        //   top: 40,
-        //   left: 16,
-        //   child: GestureDetector(
-        //     onTap: () {
-        //       _controller.pause();
-        //       widget.onBack();
-        //     },
-        //     child: Container(
-        //       padding: const EdgeInsets.all(8),
-        //       decoration: const BoxDecoration(
-        //         color: Colors.black54,
-        //         shape: BoxShape.circle,
-        //       ),
-        //       child: const Icon(Icons.arrow_back, color: Colors.white),
-        //     ),
-        //   ),
-        // ),
         // Channel title
         Positioned(
           bottom: 40,
@@ -120,7 +101,7 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
             ],
           ),
         ),
-        // Replay icon
+        // Replay icon when video ends
         if (_isVideoEnded)
           Positioned.fill(
             child: Center(
