@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,20 +62,27 @@ class _ShortsListState extends State<ShortsList> {
   @override
   void initState() {
     super.initState();
-    _loadAgeAndFetchVideos();
+    _future = _loadAgeAndFetchVideos(); // Initialize _future here!
   }
 
-  Future<void> _loadAgeAndFetchVideos() async {
+  Future<Map<String, dynamic>> _loadAgeAndFetchVideos() async {
     final prefs = await SharedPreferences.getInstance();
     ageGroup = prefs.getString('selectedAgeGroup') ?? '3-4';
-    _future = fetchKidsShorts(ageGroup: ageGroup);
-    setState(() {});
+    final int randomPageSkip = Random().nextInt(5); // 0 to 4
+    String? token;
+    Map<String, dynamic> result = {};
+    for (int i = 0; i <= randomPageSkip; i++) {
+      result = await fetchKidsShorts(ageGroup: ageGroup, pageToken: token);
+      token = result['nextPageToken'];
+      if (token == null) break;
+    }
+    return result;
   }
 
   void _autoPlayFirstVideo(
     BuildContext context,
     List<Map<String, dynamic>> videos,
-    String nextPageToken,
+    String? nextPageToken,
   ) {
     if (!_navigated && videos.isNotEmpty && ageGroup != null) {
       _navigated = true;
@@ -90,7 +98,6 @@ class _ShortsListState extends State<ShortsList> {
             ),
           ),
         ).then((_) {
-          // Reset navigation flag so user can open another video if needed
           setState(() {
             _navigated = false;
           });
@@ -103,7 +110,7 @@ class _ShortsListState extends State<ShortsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.pink.shade50,
-      body: FutureBuilder(
+      body: FutureBuilder<Map<String, dynamic>>(
         future: _future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -112,7 +119,7 @@ class _ShortsListState extends State<ShortsList> {
           if (snapshot.hasError) {
             return const Center(child: Text('Error loading videos'));
           }
-          final result = snapshot.data as Map<String, dynamic>;
+          final result = snapshot.data!;
           final videos = List<Map<String, dynamic>>.from(result['videos']);
           final nextPageToken = result['nextPageToken'];
           _autoPlayFirstVideo(context, videos, nextPageToken);

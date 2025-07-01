@@ -4,10 +4,12 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class ShortsVideoPlayer extends StatefulWidget {
   final String videoId;
   final String channelTitle;
+  final VoidCallback onBack;
   const ShortsVideoPlayer({
     super.key,
     required this.videoId,
     required this.channelTitle,
+    required this.onBack,
   });
   @override
   State<ShortsVideoPlayer> createState() => _ShortsVideoPlayerState();
@@ -15,6 +17,7 @@ class ShortsVideoPlayer extends StatefulWidget {
 
 class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
   late YoutubePlayerController _controller;
+  bool _isVideoEnded = false;
   @override
   void initState() {
     super.initState();
@@ -27,7 +30,24 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
         hideControls: true,
         controlsVisibleAtStart: false,
       ),
-    );
+    )..addListener(_checkVideoStatus);
+  }
+
+  void _checkVideoStatus() {
+    final state = _controller.value.playerState;
+    if (state == PlayerState.ended && !_isVideoEnded) {
+      setState(() {
+        _isVideoEnded = true;
+      });
+    }
+  }
+
+  void _replayVideo() {
+    _controller.seekTo(Duration.zero);
+    _controller.play();
+    setState(() {
+      _isVideoEnded = false;
+    });
   }
 
   @override
@@ -38,6 +58,7 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
 
   @override
   void dispose() {
+    _controller.removeListener(_checkVideoStatus);
     _controller.dispose();
     super.dispose();
   }
@@ -46,27 +67,33 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // Fullscreen video
         SizedBox.expand(
           child: YoutubePlayer(
             controller: _controller,
-            showVideoProgressIndicator: true,
+            showVideoProgressIndicator: false,
           ),
         ),
-        Positioned(
-          top: 40,
-          left: 16,
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: const BoxDecoration(
-                color: Colors.black54,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.arrow_back, color: Colors.white),
-            ),
-          ),
-        ),
+        // Back button
+        // Positioned(
+        //   top: 40,
+        //   left: 16,
+        //   child: GestureDetector(
+        //     onTap: () {
+        //       _controller.pause();
+        //       widget.onBack();
+        //     },
+        //     child: Container(
+        //       padding: const EdgeInsets.all(8),
+        //       decoration: const BoxDecoration(
+        //         color: Colors.black54,
+        //         shape: BoxShape.circle,
+        //       ),
+        //       child: const Icon(Icons.arrow_back, color: Colors.white),
+        //     ),
+        //   ),
+        // ),
+        // Channel title
         Positioned(
           bottom: 40,
           left: 16,
@@ -93,6 +120,27 @@ class _ShortsVideoPlayerState extends State<ShortsVideoPlayer> {
             ],
           ),
         ),
+        // Replay icon
+        if (_isVideoEnded)
+          Positioned.fill(
+            child: Center(
+              child: GestureDetector(
+                onTap: _replayVideo,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black45,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: const Icon(
+                    Icons.replay,
+                    size: 60,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
