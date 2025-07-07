@@ -39,7 +39,7 @@ class _SignInPageState extends State<SignInPage> {
             colors: [
               Color.fromARGB(255, 245, 185, 185),
               Color.fromARGB(255, 153, 90, 101),
-              Color.fromARGB(255, 161, 48, 71),
+              Color.fromARGB(255, 163, 62, 82),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
