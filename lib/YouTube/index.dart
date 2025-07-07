@@ -124,10 +124,7 @@ class _ShortsListState extends State<ShortsList> {
           final nextPageToken = result['nextPageToken'];
           _autoPlayFirstVideo(context, videos, nextPageToken);
           return const Center(
-            child: Text(
-              'Loading first short...',
-              style: TextStyle(fontSize: 18),
-            ),
+            child: Text('Loading...', style: TextStyle(fontSize: 18)),
           );
         },
       ),
