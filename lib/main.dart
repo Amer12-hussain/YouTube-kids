@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'Signin/index.dart'; // 👈 Import your SignIn screen
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'Signin/index.dart';
 
-void main() {
+Future<void> main() async {
+  // 👇 Load the .env file before runApp
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -16,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
         scaffoldBackgroundColor: Colors.deepPurple[50],
       ),
-      home: SignInPage(), // 👈 Set your custom sign-in page here
+      home: const SignInPage(),
     );
   }
 }

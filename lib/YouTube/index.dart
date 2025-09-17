@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_kids/YoutubePlayerScreen/ShortsFeedScreen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<Map<String, dynamic>> fetchKidsShorts({
   String? ageGroup,
   String? pageToken,
 }) async {
-  const String apiKey = 'AIzaSyD4QG7mkX0OohnfFTsr70CMUzMNzU0vF30';
+  final String apiKey = dotenv.env['YOUTUBE_API_KEY'] ?? '';
   String query = 'kids cartoon shorts';
   switch (ageGroup) {
     case '1-2':
@@ -35,6 +36,10 @@ Future<Map<String, dynamic>> fetchKidsShorts({
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
+    print("Using API key: $apiKey");
+    print("Request URL: $url");
+    print("Response status: ${response.statusCode}");
+    print("Response body: ${response.body}");
     final List items = data['items'];
     final videos = items.map((item) {
       return {

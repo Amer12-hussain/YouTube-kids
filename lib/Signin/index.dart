@@ -19,7 +19,7 @@ class _SignInPageState extends State<SignInPage> {
         setState(() {
           _user = account;
         });
-        print("✅ Signed in: ${account.email}");
+        print(" Signed in: ${account.email}");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
